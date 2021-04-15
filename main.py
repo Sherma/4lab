@@ -2,31 +2,33 @@ from tkinter import *
 from tkinter import Button
 
 mult = 1
-temp = 0
+num_toshow = 0
+N = 0
 # початкове значення
-after_id = ''
+after_id = 0
 
 
 # збільшення на 1 кожну секунду
-def tick(a):
-    global temp, after_id, mult
-    if temp > a:
+def tick():
+    global num_toshow, after_id, mult
+    if num_toshow > N:
         root.after_cancel(after_id)
         btn1.grid(row=1, columnspan=2, sticky="ew")
         btn2.grid_forget()
     else:
         after_id = root.after(1000, tick)
-        label1.configure(text=str(temp))
-        temp += 2
+        label1.configure(text=str(num_toshow))
+        num_toshow += 2
         label2.configure(text=str(mult))
-        mult *= temp
+        mult *= num_toshow
 
 
 # запуск підрахунку
-def start_sw(a):
+def start_sw():
+    get_N()
     btn1.grid_forget()
     btn2.grid(row=1, columnspan=2, sticky="ew")
-    tick(a)
+    tick()
 
 
 # зупинити підрахунок
@@ -38,17 +40,17 @@ def stop_sw():
 
 
 # продовжити підрахунок
-def continue_sw(a):
+def continue_sw():
     btn3.grid_forget()
     btn4.grid_forget()
     btn2.grid(row=1, columnspan=2, sticky="ew")
-    tick(a)
+    tick()
 
 
 # обнулити підрахунок
 def reset_sw():
-    global temp, mult
-    temp = 0
+    global num_toshow, mult
+    num_toshow = 0
     mult = 1
     label1.configure(text="0")
     label2.configure(text="0")
@@ -56,6 +58,14 @@ def reset_sw():
     btn4.grid_forget()
     btn1.grid(row=1, columnspan=2, sticky="ew")
 
+def get_N(): 
+    global N
+    try:
+        a = int(entry_a.get())
+        N = a
+        print(N)
+    except ValueError as e:
+        print(e)
 
 # створення порожнього вікна
 root = Tk()
@@ -73,11 +83,11 @@ entry_a = Entry(root, font=("Ubuntu", 30))
 entry_a.place(x=500, y=300)
 
 # створення кнопок стану підрахунку
-btn1 = Button(root, text="Пуск", font=("Ubuntu", 30), command=start_sw)
-btn1.bind('<Button-1>', lambda event: start_sw(float(entry_a.get())))
+btn1 = Button(root, text="Пуск", font=("Ubuntu", 30) )
+btn1.bind('<Button-1>', lambda event: start_sw())
 btn2 = Button(root, text="Стоп", font=("Ubuntu", 30), command=stop_sw)
-btn3 = Button(root, text="Продовжити", font=("Ubuntu", 30), command=continue_sw)
-btn3.bind('<Button-1>', lambda event: continue_sw(float(entry_a.get())))
+btn3 = Button(root, text="Продовжити", font=("Ubuntu", 30))
+btn3.bind('<Button-1>', lambda event: continue_sw())
 btn4: Button = Button(root, text="Скинути", font=("Ubuntu", 30), command=reset_sw)
 
 # відображення кнопки на формі
